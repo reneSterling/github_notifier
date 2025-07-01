@@ -1,0 +1,41 @@
+name: run test and slack notification
+
+on: [push, pull_request]
+
+jobs: 
+  test: 
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: cloning code
+        uses: actions/checkout@v4
+
+      - name: installing python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: '3.11'
+
+      - name: installing dependencies
+        run: pip install -r requirements.txt
+
+      - name: run tests
+        run: pytest python_test.py
+
+      - name: slack_failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text": "test failed on github actions"}' \
+          $SLACK_WEBHOOK
+        env: 
+          SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
+
+      - name: slack_success
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text": "test passed successfully on github actions"}' \
+          $SLACK_WEBHOOK
+        
+        env: 
+          SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
