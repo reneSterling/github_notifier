@@ -26,16 +26,16 @@ jobs:
         run: |
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text": "test failed on github actions"}' \
-          $SLACK_WEBHOOK
+          $SLACK_CONNECT
         env: 
-          SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
+          SLACK_CONNECT: ${{secrets.SLACK_CONNECT}}
 
       - name: slack_success
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
           --data '{"text": "test passed successfully on github actions"}' \
-          $SLACK_WEBHOOK
+          $SLACK_CONNECT
         
         env: 
-          SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
+          SLACK_CONNECT: ${{secrets.SLACK_CONNECT}}
